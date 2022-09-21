@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 import pygame
 import time
-CWD="C:\\Users\\levis\\OneDrive\\Documents\\Python projects\\Personal\\maze\\"
+CWD="./"
 image1 = Image.open(CWD+"Whiteboard.png")
 if image1.size[1]>900:
     image1=image1.reduce(image1.size[1]//900+1)
