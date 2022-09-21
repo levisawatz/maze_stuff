@@ -7,7 +7,6 @@ import time
 from matplotlib import pyplot as plt
 import matplotlib
 
-
 DISPWIDTH,DISPHIGHT=(1200,850)
 CWD="./"
 
@@ -15,15 +14,15 @@ CWD="./"
 
 SHOW_PATH=True
 SHOW_RADAR=True
-PLOT_RADAR=True
+PLOT_RADAR=False
 
-
+MAZE_IMAGE=CWD+"megsmaze.png"
 
 N_MEN=1 #number of men
 WANDERMODE=0
 """ 0: Weighted random wander
     1: Wall hugger"""
-SIGHT_ACCURACY=20
+SIGHT_ACCURACY=10
 """ number of 'lazers' from his eyes"""
 VIEW_ANGLE=3.1
 """ angle of periferial vision, radians"""
@@ -169,7 +168,7 @@ def drawman(disp,man:Man):
     size=1
     pos=man.__disppos__()
     pygame.draw.circle(disp, (0,255,0), pos, 10*size)
-    pygame.draw.circle(disp, (0,0,0), pos, 10*size,width=1)
+    pygame.draw.circle(disp, (0,0,0),   pos, 10*size,width=1)
     ang=angle(man.direction)
     i=ang+.35
     eye=np.array([math.cos(i),math.sin(i)],float)
@@ -198,7 +197,7 @@ def main():
     pmp=mousepos=(0,0)
     mousebutton=0
     begintime=time.time()
-    image1 = Image.open(CWD+"megsmaze.png")
+    image1 = Image.open(MAZE_IMAGE)
     plotter=Plotter()
 
     if image1.size[1]>900:
