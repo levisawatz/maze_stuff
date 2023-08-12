@@ -170,35 +170,47 @@ class Grid:
 
     #######______.mzg file______######
     def customgrid(self,name):
-        with open(name,'r') as f:
+        with open("mzg_files/"+name,'r') as f:
             for i,line in enumerate(f):
                 for j, chr in enumerate(line[:-1]):
                     self.walls[i,j]=int(chr)
+
+    def clearpaths(self):
+        for row in self.tiles:
+            for i in row:
+                if i.deadend:
+                    i.deadend=False
+                    i.stepped=False
+
+
+
     def random_maze(self):
         for i in range(self.wallsx):
             for j in range(self.wallsy):
                 self.walls[i,j]=random.randint(0,1)
-    def savemaze(self):
+    def savemaze(self, name = None):
         # print(f'{GRIDSIZE[1]} {GRIDSIZE[0]}')
         binary='\n'.join([''.join([str(tile) for tile in line])for line in self.walls])
         # binary=int(binary,base=2)
         # print(hex(binary))
         filenumbermax=0
         #search cwd
-        for subdir, dirs, files in os.walk('./'):
-            
-            for file in files:
-                if file[-4:]=='.mzg':
-                    try:
-                        if int(file[-6:-4])>filenumbermax:
-                            filenumbermax=int(file[-6:-4])
-                    except: pass
-        filenumbermax+=1
-        if filenumbermax<10:
-            filenum=f'0{filenumbermax}'
-        else: filenum=str(filenumbermax)
-                    
-        with open(f"maze_{filenum}.mzg",'w') as f:
+        if name is None:
+            for subdir, dirs, files in os.walk('./mzg_files'):
+                
+                for file in files:
+                    if file[-4:]=='.mzg':
+                        try:
+                            if int(file[-6:-4])>filenumbermax:
+                                filenumbermax=int(file[-6:-4])
+                        except: pass
+            filenumbermax+=1
+            if filenumbermax<10:
+                filenum=f'0{filenumbermax}'
+            else: filenum=str(filenumbermax)
+            name = f"maze_{filenum}.mzg"
+        
+        with open("./mzg_files/"+name,'w') as f:
             f.write(binary)
             f.close()
 class Solveparams:
@@ -237,16 +249,24 @@ class Tasks:
             self.solve(grid)
         if self.makemaze: 
             self.iterations=1000
+            
             self.make(grid)
 
     def solve(self,grid):
         for _ in range(self.solveparams.iterations):
-            if self.solveparams.tile == None: break
+            if self.solveparams.tile == None:
+                grid.clearpaths()
+                break
+
             self.solveparams.tile=self.solveparams.tile.progress(grid)
     def make(self,grid:Grid):
         
         for _ in range(self.makemazeparams.iterations):
-            if self.makemazeparams.tile is None: break
+            if self.makemazeparams.tile is None: 
+                self.solveparams.__init__(grid)
+                self.makemaze=0
+
+                break
             self.makemazeparams.tile=self.makemazeparams.tile.buildmaze(grid,self.makemazeparams.backtrack)
             if random.randint(0,50)==0 and self.makemazeparams.backtrack==0:
                 self.makemazeparams.backtrack=1
@@ -256,6 +276,11 @@ class Tasks:
             if self.makemazeparams.x==0:
                 self.makemazeparams.backtrack=0
             grid.wallsdisp=None
+
+        
+
+
+        
         
 
 

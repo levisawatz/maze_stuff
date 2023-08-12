@@ -1,4 +1,6 @@
 # Author: Levi sawatzky
 
-## mazeman:
+## maze_grid.py:
+
+<img src="./images/mazegrid.gif" height="200"  />
     
